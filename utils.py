@@ -36,9 +36,9 @@ def load_train(image_size=33, stride=33, scale=3):
 def load_test(scale=3):
     dirname = './test'
     dir_list = os.listdir(dirname)
-    images = [cv2.cvtColor(cv2.imread(os.path.join(dirname,img)),cv2.COLOR_BGR2GRAY) for img in dir_list]
-    images = [img[0:img.shape[0]-np.remainder(img.shape[0],scale),0:img.shape[1]-np.remainder(img.shape[1],scale)] for img in images]
-
+    images = [cv2.cvtColor(cv2.imread(os.path.join(dirname,img)),cv2.COLOR_BGR2YCrCb) for img in dir_list]
+    color = [img[0:img.shape[0]-np.remainder(img.shape[0],scale),0:img.shape[1]-np.remainder(img.shape[1],scale), 1:3] for img in images]
+    images = [img[0:img.shape[0]-np.remainder(img.shape[0],scale),0:img.shape[1]-np.remainder(img.shape[1],scale), 0] for img in images]
     tests = images.copy()
     labels = images.copy()
     
@@ -49,7 +49,7 @@ def load_test(scale=3):
     tests = [img.reshape(img.shape[0],img.shape[1],1) for img in tests]
     labels = [img.reshape(img.shape[0],img.shape[1],1) for img in labels]
 
-    return pre_tests, tests, labels
+    return pre_tests, tests, labels, color
 
 def mse(y, t):
     return np.mean(np.square(y - t))
